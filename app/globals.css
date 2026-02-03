@@ -187,6 +187,16 @@ html {
   animation: fadeIn 0.5s ease-in-out;
 }
 
+/* Forcer le fond noir pour les conteneurs d'iframes Vimeo */
+iframe[src*="vimeo.com"] {
+  background-color: #000000 !important;
+}
+
+/* S'assurer que les conteneurs de vidéos Vimeo ont un fond noir */
+div:has(iframe[src*="vimeo.com"]) {
+  background-color: #000000 !important;
+}
+
 /* Animation de défilement horizontal pour les logos clients */
 @keyframes scroll {
   0% {

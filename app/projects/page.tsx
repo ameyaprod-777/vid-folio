@@ -68,34 +68,33 @@ const projects: Project[] = [
     id: 1,
     title: 'RK - BIG CHOPARD',
     category: 'Director',
-    video: 'https://vimeo.com/1157924020?fl=tl&fe=ec',
+    video: 'https://www.youtube.com/watch?v=N64CiTeEYDQ&list=RDN64CiTeEYDQ&start_radio=1',
     thumbnail: '/rk-chopard.png',
-    description: 'Music video for RK featuring Big Chopard. Directed and edited with a focus on dynamic visuals and cinematic storytelling.',
   },
   {
     id: 2,
     title: 'Landy - Grinta',
     category: 'Director',
-    video: 'https://vimeo.com/1157924898?fl=tl&fe=ec',
+    video: 'https://www.youtube.com/watch?v=ehEKCvzld-g&list=RDehEKCvzld-g&start_radio=1',
   },
   {
     id: 3,
     title: 'Zed & Green Montana - Fame',
     category: 'Director',
-    video: 'https://vimeo.com/1158049394?fl=tl&fe=ec',
+    video: 'https://www.youtube.com/watch?v=VKiPgi99E3k&list=RDVKiPgi99E3k&start_radio=1',
     thumbnail: '/zedgreenfame.jpg',
   },
   {
     id: 4,
     title: 'Ice Spice - Baddie Baddie',
     category: 'Camera Operator',
-    video: 'https://vimeo.com/1158050582?share=copy&fl=sv&fe=ci',
+    video: 'https://www.youtube.com/watch?v=qGzKA3aROGE&list=RDqGzKA3aROGE&start_radio=1',
   },
   {
     id: 5,
     title: 'Wizkid & Brent Faiyaz - Piece of My Heart',
     category: 'Camera Operator',
-    video: 'https://vimeo.com/1045245386?fl=tl&fe=ec',
+    video: 'https://www.youtube.com/watch?v=zr_sTaYTCnU&list=RDzr_sTaYTCnU&start_radio=1&pp=ygUMd2l6a2lkIGJyZW50oAcB',
     thumbnail: '/wizkidbrent.png',
   },
   {
@@ -121,9 +120,9 @@ const projects: Project[] = [
   },
   {
     id: 9,
-    title: 'Guy2Bezbar - Batman',
+    title: 'Guy2Bezbar - Batmobile',
     category: 'Editor',
-    video: 'https://vimeo.com/1158048532?fl=tl&fe=ec',
+    video: 'https://www.youtube.com/watch?v=2L0cNtPNaGc&list=RD2L0cNtPNaGc&start_radio=1&pp=ygUOZ3V5MiBiYXRtb2JpbGWgBwE%3D',
     thumbnail: '/g2batmobile.jpg',
   },
 ]
@@ -156,6 +155,11 @@ export default function ProjectsPage() {
 
   const closeModal = () => {
     setSelectedProject(null)
+  }
+
+  // Fonction pour détecter si c'est une vidéo YouTube
+  const isYouTubeVideo = (url: string): boolean => {
+    return url.includes('youtube.com') || url.includes('youtu.be')
   }
 
   // Empêcher le téléchargement et le clic droit
@@ -497,22 +501,24 @@ export default function ProjectsPage() {
                   />
                 </div>
 
-                {/* Description */}
-                <div className="p-6 sm:p-8 border-t border-white/10">
-                  <div className="mb-4">
-                    <span className="text-xs sm:text-sm uppercase tracking-wider text-white/60 mb-2 block">
-                      {selectedProject.category}
-                    </span>
-                    <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold uppercase tracking-tight mb-4">
-                      {selectedProject.title}
-                    </h2>
+                {/* Description - Masquée pour les vidéos YouTube */}
+                {!isYouTubeVideo(selectedProject.video) && (
+                  <div className="p-6 sm:p-8 border-t border-white/10">
+                    <div className="mb-4">
+                      <span className="text-xs sm:text-sm uppercase tracking-wider text-white/60 mb-2 block">
+                        {selectedProject.category}
+                      </span>
+                      <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold uppercase tracking-tight mb-4">
+                        {selectedProject.title}
+                      </h2>
+                    </div>
+                    {selectedProject.description && (
+                      <p className="text-sm sm:text-base text-white/80 leading-relaxed max-w-3xl">
+                        {selectedProject.description}
+                      </p>
+                    )}
                   </div>
-                  {selectedProject.description && (
-                    <p className="text-sm sm:text-base text-white/80 leading-relaxed max-w-3xl">
-                      {selectedProject.description}
-                    </p>
-                  )}
-                </div>
+                )}
               </div>
             </motion.div>
           </>

@@ -10,8 +10,8 @@ const galleryImages = [
   '/ameyapolar2.png',
   '/ameyaxgunna2.png',
   '/ameyaxice2.png',
-  '/ameyaxwizzy.jpg',
-  '/ameyapolar2.png',
+  '/realwizzameya.png',
+  '/ameyapix1.png',
 ]
 
 // Logos des clients
@@ -240,7 +240,7 @@ export default function AboutPage() {
         >
           {/* Titre */}
           <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl uppercase tracking-wider font-medium text-white/90">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl uppercase tracking-wider font-medium text-white/90 font-akira">
               They Trust Me
             </h2>
           </div>

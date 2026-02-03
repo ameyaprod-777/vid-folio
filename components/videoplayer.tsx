@@ -2,6 +2,14 @@
 
 import { useEffect, useRef } from 'react'
 
+// Déclaration pour l'API YouTube IFrame
+declare global {
+  interface Window {
+    YT: any
+    onYouTubeIframeAPIReady: () => void
+  }
+}
+
 interface VideoPlayerProps {
   src: string
   className?: string
@@ -83,18 +91,30 @@ export default function VideoPlayer({
       )
     }
 
-    // Ajout de transparent=1 pour rendre le fond transparent
-    const vimeoUrl = `https://player.vimeo.com/video/${vimeoId}?autoplay=${autoPlay ? 1 : 0}&loop=${loop ? 1 : 0}&muted=${muted ? 1 : 0}&background=1&controls=0&playsinline=1&transparent=1`
+    // Configuration Vimeo pour fond noir
+    // transparent=1 rend le fond transparent, mais on force le noir avec le conteneur
+    // background=1 active le mode background (pas de contrôles)
+    const vimeoUrl = `https://player.vimeo.com/video/${vimeoId}?autoplay=${autoPlay ? 1 : 0}&loop=${loop ? 1 : 0}&muted=${muted ? 1 : 0}&background=1&controls=0&playsinline=1&transparent=1&color=000000`
 
     return (
-      <iframe
-        src={vimeoUrl}
-        className={`w-full h-full object-cover ${className}`}
-        frameBorder="0"
-        allow="autoplay; fullscreen; picture-in-picture"
-        allowFullScreen
-        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-      />
+      <div className="relative w-full h-full bg-black overflow-hidden" style={{ backgroundColor: '#000000' }}>
+        <iframe
+          src={vimeoUrl}
+          className={`w-full h-full object-cover ${className}`}
+          frameBorder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowFullScreen
+          loading="lazy"
+          style={{ 
+            position: 'absolute', 
+            top: 0, 
+            left: 0, 
+            width: '100%', 
+            height: '100%',
+            backgroundColor: '#000000',
+          }}
+        />
+      </div>
     )
   }
 
@@ -109,7 +129,7 @@ export default function VideoPlayer({
       )
     }
 
-    // Construire l'URL YouTube avec les paramètres appropriés
+    // Construire l'URL YouTube avec les paramètres appropriés pour qualité maximale
     const youtubeParams = new URLSearchParams({
       autoplay: autoPlay ? '1' : '0',
       mute: muted ? '1' : '0',
@@ -117,6 +137,11 @@ export default function VideoPlayer({
       playsinline: '1',
       rel: '0', // Ne pas afficher les vidéos suggérées
       modestbranding: '1', // Réduire le branding YouTube
+      iv_load_policy: '3', // Masquer les annotations
+      cc_load_policy: '0', // Pas de sous-titres par défaut
+      showinfo: '0', // Masquer les infos de la vidéo
+      vq: 'highres', // Forcer la meilleure qualité disponible (hd1080, hd720, highres)
+      enablejsapi: '1', // Activer l'API JavaScript pour contrôler la qualité
     })
 
     // Pour la boucle, YouTube nécessite le paramètre playlist avec l'ID de la vidéo
@@ -134,11 +159,13 @@ export default function VideoPlayer({
 
     return (
       <iframe
+        id={`youtube-player-${youtubeId}`}
         src={youtubeUrl}
         className={`w-full h-full object-cover ${className}`}
         frameBorder="0"
         allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
         allowFullScreen
+        loading="lazy"
         style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
       />
     )

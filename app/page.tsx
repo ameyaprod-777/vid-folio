@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { motion, AnimatePresence } from 'framer-motion'
-import VideoPlayer from '@/components/videoplayer'
+import LazyVideoPlayer from '@/components/LazyVideoPlayer'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -42,21 +42,33 @@ export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   useEffect(() => {
+    if (!projectsRef.current) return
+
     const ctx = gsap.context(() => {
-      // Animation des projets
-      gsap.from('.project-item', {
-        scrollTrigger: {
-          trigger: '.projects-section',
-          start: 'top 80%',
-          toggleActions: 'play none none none',
+      // Animation des projets avec fade + zoom-in stylé au scroll
+      gsap.fromTo(
+        '.project-item',
+        {
+          opacity: 0,
+          y: 60,
+          scale: 0.9,
         },
-        opacity: 0,
-        y: 40,
-        duration: 0.8,
-        stagger: 0.15,
-        ease: 'power2.out',
-      })
-    })
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 1,
+          stagger: 0.2,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '.projects-section',
+            start: 'top 85%',
+            end: 'bottom 20%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      )
+    }, projectsRef)
 
     return () => ctx.revert()
   }, [])
@@ -207,23 +219,28 @@ export default function Home() {
       {/* Projects Section - Style donprod */}
       <section ref={projectsRef} className="projects-section pb-20 sm:pb-32 px-6 sm:px-8 lg:px-12">
         <div className="max-w-6xl mx-auto space-y-8 sm:space-y-12">
-          {featuredProjects.map((project) => (
+          {featuredProjects.map((project, index) => (
             <motion.div
             key={project.id}
               className="project-item group cursor-pointer"
               whileHover={{ scale: 1.01 }}
               transition={{ duration: 0.3 }}
+              data-video-index={index}
+              style={{ opacity: 0 }} // Initialement caché pour l'animation GSAP
           >
-              {/* Vidéo avec bordure fine */}
+              {/* Vidéo avec bordure fine - Lazy Loading */}
               <div className="relative w-full aspect-video bg-black border border-black overflow-hidden">
-              <VideoPlayer
-                src={project.video}
-                autoPlay
-                loop
-                muted
-                className="w-full h-full object-cover"
-              />
-            </div>
+                <div className="absolute inset-0 bg-black">
+                  <LazyVideoPlayer
+                    src={project.video}
+                    autoPlay
+                    loop
+                    muted
+                    priority={index === 0} // Précharger la première vidéo immédiatement
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
 
               {/* Bande noire avec texte - Style donprod */}
               <div className="bg-black py-4 sm:py-5 px-4 sm:px-6 flex items-center justify-between">
