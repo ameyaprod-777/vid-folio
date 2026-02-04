@@ -11,7 +11,7 @@ const galleryImages = [
   '/ameyaxgunna2.png',
   '/ameyaxice2.png',
   '/realwizzameya.png',
-  '/ameyaxnadym2.png',
+  '/nadymbff.png',
 ]
 
 // Logos des clients
