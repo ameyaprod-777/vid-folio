@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-// Configuration : Remplacez par votre clé API Resend
-// Obtenez votre clé sur https://resend.com/api-keys
+// Configuration : clés API
+// Resend : https://resend.com/api-keys
+// reCAPTCHA v3 : https://www.google.com/recaptcha/admin
 const RESEND_API_KEY = process.env.RESEND_API_KEY
 const TO_EMAIL = process.env.CONTACT_EMAIL || 'contact@ameya.tv'
+const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { name, email, message, budget, honeypot } = body
+    const { name, email, message, budget, honeypot, recaptchaToken } = body
 
     // Protection anti-spam : honeypot field
     if (honeypot) {
@@ -18,7 +20,48 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Validation
+    // Validation reCAPTCHA (si configuré)
+    if (RECAPTCHA_SECRET_KEY) {
+      if (!recaptchaToken) {
+        return NextResponse.json(
+          { error: 'reCAPTCHA validation failed' },
+          { status: 400 }
+        )
+      }
+
+      try {
+        const recaptchaResponse = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: `secret=${encodeURIComponent(RECAPTCHA_SECRET_KEY)}&response=${encodeURIComponent(
+            recaptchaToken
+          )}`,
+        })
+
+        const recaptchaData = await recaptchaResponse.json()
+
+        if (
+          !recaptchaData.success ||
+          (typeof recaptchaData.score === 'number' && recaptchaData.score < 0.4)
+        ) {
+          console.warn('reCAPTCHA verification failed:', recaptchaData)
+          return NextResponse.json(
+            { error: 'reCAPTCHA verification failed' },
+            { status: 400 }
+          )
+        }
+      } catch (error) {
+        console.error('reCAPTCHA verification error:', error)
+        return NextResponse.json(
+          { error: 'reCAPTCHA verification error' },
+          { status: 500 }
+        )
+      }
+    }
+
+    // Validation des champs du formulaire
     if (!name || !email || !message) {
       return NextResponse.json(
         { error: 'All fields are required' },

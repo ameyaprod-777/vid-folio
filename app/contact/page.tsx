@@ -3,6 +3,10 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
+import Image from 'next/image'
+import Script from 'next/script'
+
+const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY
 
 export default function ContactPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -33,12 +37,31 @@ export default function ContactPage() {
     setSubmitStatus({ type: null, message: '' })
 
     try {
+      // Protection reCAPTCHA v3
+      let recaptchaToken: string | null = null
+
+      if (RECAPTCHA_SITE_KEY && typeof window !== 'undefined') {
+        const grecaptcha = (window as any).grecaptcha
+        if (grecaptcha && typeof grecaptcha.execute === 'function') {
+          try {
+            recaptchaToken = await grecaptcha.execute(RECAPTCHA_SITE_KEY, {
+              action: 'contact_form',
+            })
+          } catch (error) {
+            console.error('reCAPTCHA execution error:', error)
+          }
+        }
+      }
+
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          recaptchaToken,
+        }),
       })
 
       const data = await response.json()
@@ -78,13 +101,27 @@ export default function ContactPage() {
 
   return (
     <main className="min-h-screen bg-white text-black">
+      {/* Script reCAPTCHA v3 (chargé uniquement si une clé est configurée) */}
+      {RECAPTCHA_SITE_KEY && (
+        <Script
+          src={`https://www.google.com/recaptcha/api.js?render=${RECAPTCHA_SITE_KEY}`}
+          strategy="lazyOnload"
+        />
+      )}
       {/* Header Simple - Style donprod avec fond blanc */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-sm border-b border-black/10">
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-4">
           <div className="flex items-center justify-between">
             {/* Logo gauche */}
-            <Link href="/" className="text-base sm:text-lg md:text-xl uppercase tracking-tight font-bold font-akira text-black">
-              AMEYA
+            <Link href="/" className="flex items-center">
+              <Image
+                src="/logoameyasimple-black.png"
+                alt="AMEYA"
+                width={60}
+                height={60}
+                className="h-8 w-auto sm:h-10 md:h-12 object-contain"
+                priority
+              />
             </Link>
 
             {/* Icône Menu Hamburger */}
@@ -190,7 +227,7 @@ export default function ContactPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold uppercase tracking-tight mb-4">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold uppercase tracking-tight mb-4 font-akira">
               CONTACT
             </h1>
           </motion.div>

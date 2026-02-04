@@ -196,8 +196,15 @@ export default function ProjectsPage() {
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-4">
           <div className="flex items-center justify-between">
             {/* Logo gauche */}
-            <Link href="/" className="text-base sm:text-lg md:text-xl uppercase tracking-tight font-bold font-akira">
-              AMEYA
+            <Link href="/" className="flex items-center">
+              <Image
+                src="/logoameyasimple.png"
+                alt="AMEYA"
+                width={60}
+                height={60}
+                className="h-8 w-auto sm:h-10 md:h-12 object-contain"
+                priority
+              />
             </Link>
 
             {/* Icône Menu Hamburger */}
@@ -302,7 +309,7 @@ export default function ProjectsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold uppercase tracking-tight mb-4">
+            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold uppercase tracking-tight mb-4 font-akira">
               WORKS
             </h1>
           </motion.div>

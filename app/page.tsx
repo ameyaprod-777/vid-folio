@@ -14,13 +14,13 @@ const featuredProjects = [
   {
     id: 1,
     title: 'RK - BIG CHOPARD',
-    artist: 'DIRECTOR / EDITOR',
+    artist: 'DIRECTOR',
     video: 'https://vimeo.com/1157924020?fl=tl&fe=ec',
   },
   {
     id: 2,
     title: 'LANDY - GRINTA',
-    artist: 'DIRECTOR / EDITOR',
+    artist: 'DIRECTOR',
     video: 'https://vimeo.com/1157924898?share=copy&fl=sv&fe=ci',
   },
   {
@@ -31,9 +31,9 @@ const featuredProjects = [
   },
   {
     id: 4,
-    title: 'Zed & Green Montana - FAME',
-    artist: 'Co-Director / Editor / Colorist',
-    video: 'https://vimeo.com/https://vimeo.com/1157926149?share=copy&fl=sv&fe=ci?fl=tl&fe=ec',
+    title: 'Ice Spice - Baddie Baddie',
+    artist: 'Camera Operator',
+    video: 'https://vimeo.com/1161567406?share=copy&fl=sv&fe=ci',
   },
 ]
 
@@ -95,8 +95,15 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-4">
           <div className="flex items-center justify-between">
             {/* Logo gauche */}
-            <Link href="/" className="text-base sm:text-lg md:text-xl uppercase tracking-tight font-bold font-akira">
-              AMEYA
+            <Link href="/" className="flex items-center">
+              <Image
+                src="/logoameyasimple.png"
+                alt="AMEYA"
+                width={60}
+                height={60}
+                className="h-8 w-auto sm:h-10 md:h-12 object-contain"
+                priority
+              />
             </Link>
 
             {/* Icône Menu Hamburger */}
@@ -196,7 +203,7 @@ export default function Home() {
       </AnimatePresence>
 
       {/* Logo Principal Centré - Style donprod */}
-      <section className="pt-32 sm:pt-40 pb-8 sm:pb-12 px-6 sm:px-8">
+      <section className="pt-4 sm:pt-6 pb-2 sm:pb-4 px-6 sm:px-8">
         <div className="text-center">
           <motion.div
             className="main-logo flex justify-center"
@@ -205,11 +212,11 @@ export default function Home() {
             transition={{ duration: 0.8, delay: 0.3 }}
           >
             <Image
-              src="/logo-ameya-white-png.png"
-              alt="AMEYA PROD Logo"
-              width={200}
-              height={200}
-              className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 object-contain"
+              src="/directedbyameya-white.png"
+              alt="DIRECTED BY AMEYA"
+              width={400}
+              height={400}
+              className="w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 object-contain"
               priority
             />
           </motion.div>
@@ -260,17 +267,20 @@ export default function Home() {
       <footer className="pt-16 sm:pt-20 pb-12 sm:pb-16 px-6 sm:px-8">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col items-center gap-6 sm:gap-8">
-            {/* Back to Top - Style inspiré de l'image */}
-            <motion.button
-              onClick={scrollToTop}
-              className="text-2xl sm:text-3xl md:text-4xl uppercase tracking-wider font-bold text-white hover:opacity-80 transition-opacity"
+            {/* About Me - Style inspiré de l'image */}
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              BACK TO THE TOP
-            </motion.button>
+              <Link
+                href="/about"
+                className="text-2xl sm:text-3xl md:text-4xl uppercase tracking-wider font-bold text-white hover:opacity-80 transition-opacity"
+              >
+                ABOUT ME
+              </Link>
+            </motion.div>
 
             {/* Réseaux sociaux */}
             <div className="flex items-center gap-6 sm:gap-8">
@@ -278,37 +288,55 @@ export default function Home() {
                 href="https://www.instagram.com/ameya.films/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm sm:text-base uppercase tracking-wider font-bold text-white hover:opacity-80 transition-opacity"
+                className="hover:opacity-80 transition-opacity"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.1 }}
               >
-                INSTA
+                <Image
+                  src="/instagram.png"
+                  alt="Instagram"
+                  width={24}
+                  height={24}
+                  className="w-6 h-6 sm:w-7 sm:h-7 object-contain"
+                />
               </motion.a>
               <motion.a
                 href="https://www.tiktok.com/@ameyaprod"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm sm:text-base uppercase tracking-wider font-bold text-white hover:opacity-80 transition-opacity"
+                className="hover:opacity-80 transition-opacity"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
-                TIKTOK
+                <Image
+                  src="/TIKTOK.webp"
+                  alt="TikTok"
+                  width={24}
+                  height={24}
+                  className="w-6 h-6 sm:w-7 sm:h-7 object-contain"
+                />
               </motion.a>
               <motion.a
                 href="https://vimeo.com/ameyaproductions"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm sm:text-base uppercase tracking-wider font-bold text-white hover:opacity-80 transition-opacity"
+                className="hover:opacity-80 transition-opacity"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.3 }}
               >
-                VIMEO
+                <Image
+                  src="/vimeo.png"
+                  alt="Vimeo"
+                  width={24}
+                  height={24}
+                  className="w-6 h-6 sm:w-7 sm:h-7 object-contain"
+                />
               </motion.a>
             </div>
           </div>
