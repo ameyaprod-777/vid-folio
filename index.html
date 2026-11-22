@@ -2047,19 +2047,13 @@
       if (!booted) return;
       const slides = Array.from(document.querySelectorAll("#home .slide"));
       if (!slides.length) return;
-      const next = (slideIndex + 1) % slides.length;
-      slides.forEach((slide, n) => {
+      slides.forEach((slide) => {
         const host = slide.querySelector(".media");
         if (!host) return;
-        const active = n === slideIndex;
-        if (active || n === next) {
-          const frame = activateMedia(host, "background");
-          if (frame && frame.tagName === "IFRAME") {
-            frame.dataset.want = active && !showPaused ? "play" : "pause";
-            if (frame.dataset.ready === "1") vimeoCommand(frame, frame.dataset.want === "play" ? "play" : "pause");
-          }
-        } else {
-          releaseMedia(host);
+        const frame = activateMedia(host, "background");
+        if (frame && frame.tagName === "IFRAME") {
+          frame.dataset.want = "play";
+          if (frame.dataset.ready === "1") vimeoCommand(frame, "play");
         }
       });
     }
@@ -2118,17 +2112,8 @@
       showPaused = true;
       cancelAnimationFrame(rafId);
       if (playerOpen) {
-        document.querySelectorAll(".media").forEach(releaseMedia);
-        return;
+        document.querySelectorAll(".view:not(#home) .media").forEach(releaseMedia);
       }
-      document.querySelectorAll("#home iframe[data-vimeo], #home video").forEach((el) => {
-        if (el.tagName === "IFRAME") {
-          el.dataset.want = "pause";
-          vimeoCommand(el, "pause");
-        } else {
-          el.pause();
-        }
-      });
     }
 
     function resumeShow() {
@@ -2670,7 +2655,7 @@
         link.classList.toggle("active", link.getAttribute("href") === "#" + hash);
       });
       window.scrollTo(0, 0);
-      document.querySelectorAll(".view:not(.active) .media").forEach(releaseMedia);
+      document.querySelectorAll(".view:not(.active):not(#home) .media").forEach(releaseMedia);
 
       if (hash === "home") resumeShow();
       else {
@@ -2742,7 +2727,7 @@
     function collectJobs() {
       const jobs = [];
       const seen = new Set();
-      homeWorks().forEach((item, index) => {
+      homeWorks().forEach((item) => {
         const parts = vimeoParts(chosenVimeo(item.work));
         if (!parts) return;
         const key = mediaKey("background", parts);
@@ -2753,7 +2738,7 @@
           key: key,
           parts: parts,
           mode: "background",
-          want: index === 0 ? "play" : "pause",
+          want: "play",
           index: item.index,
           title: labelOf(item.work)
         });
