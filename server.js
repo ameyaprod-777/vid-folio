@@ -50,6 +50,7 @@ function sendPage(request, response, lang, found, status) {
     const body = seo.renderPage(html, lang, found);
     const headers = headersFor("index.html");
     headers["Content-Language"] = lang;
+    headers["Vary"] = "Accept-Language, Cookie";
     response.writeHead(status || 200, headers);
     response.end(request.method === "HEAD" ? undefined : body);
   });
@@ -226,6 +227,20 @@ function serveFile(request, response) {
   }
 
   const lang = pathname.startsWith("/fr/") ? "fr" : "en";
+
+  // Un navigateur en français va directement sur /fr/, sans charger d'abord la
+  // page anglaise. Le choix fait avec EN / FR (cookie ameya-lang) est prioritaire.
+  if (lang === "en" && (pathname === "/" || pathname === "/index.html" || pathname.startsWith("/work/"))) {
+    const cookie = String(request.headers.cookie || "");
+    const chosen = (cookie.match(/(?:^|;\s*)ameya-lang=(en|fr)/) || [])[1];
+    const accept = String(request.headers["accept-language"] || "").trim().toLowerCase();
+    if (!chosen && /^fr\b/.test(accept)) {
+      const target = "/fr" + (pathname === "/index.html" ? "/" : pathname) + url.search;
+      response.writeHead(302, { Location: target, Vary: "Accept-Language, Cookie", "Cache-Control": "private, no-cache" });
+      response.end();
+      return;
+    }
+  }
   const prefix = lang === "fr" ? "/fr" : "";
   if (lang === "fr") pathname = pathname.slice(3);
 

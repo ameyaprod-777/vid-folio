@@ -89,7 +89,7 @@
       try {
         var page = location.pathname;
         if (page !== "/" && page !== "/index.html" && !/^\/work\//.test(page)) return;
-        if (localStorage.getItem("ameya-lang")) return;
+        if (/(?:^|;\s*)ameya-lang=/.test(document.cookie) || localStorage.getItem("ameya-lang")) return;
         var langs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || ""];
         if (/^fr\b/i.test(String(langs[0]))) location.replace("/fr" + (page === "/index.html" ? "/" : page) + location.hash);
       } catch (error) {}
@@ -222,8 +222,14 @@
       line-height: 1;
     }
 
-    .lang span { color: rgba(255, 255, 255, .28); }
+    /* Une ombre douce garde EN / FR lisible sur les vidéos claires. */
+    .lang { text-shadow: 0 1px 10px rgba(0, 0, 0, .6), 0 0 2px rgba(0, 0, 0, .35); }
 
+    .lang span { color: rgba(255, 255, 255, .45); }
+
+    header .lang a { color: rgba(255, 255, 255, .62); }
+
+    header .lang a:hover,
     header .lang a[aria-current] { color: var(--white); }
 
     header a,
@@ -1237,7 +1243,7 @@
 
     @media (max-width: 560px) {
       .grid { grid-template-columns: 1fr; }
-      .caption { bottom: 28px; }
+      .caption { bottom: 40px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -1253,7 +1259,7 @@
     <div class="boot-grid" aria-hidden="true"></div>
     <div class="boot-panel">
       <div class="boot-brand">
-        <img src="/assets/logo.png" alt="AMEYA">
+        <img src="/assets/logo-336.png" alt="AMEYA">
         <p>Loading Project</p>
       </div>
       <div class="boot-track">
@@ -1269,7 +1275,7 @@
 
   <header>
     <a class="logo" href="#home" aria-label="AMEYA CORP, accueil">
-      <img src="/assets/logo.png" alt="AMEYA CORP">
+      <img src="/assets/logo-336.png" alt="AMEYA CORP">
     </a>
     <nav id="nav" aria-label="Catégories"></nav>
     <div class="head-right">
@@ -1700,11 +1706,11 @@
         "Our signature? A balance between refined aesthetics and raw energy. We treat every frame as a canvas, then bring it to life through movement, rhythm and precise editing. Whether it's a music video, a commercial or an artistic project, we turn bold concepts into cinematic experiences that stay with the audience long after the screen goes dark."
       ],
       gallery: [
-        "/public/ameyapolar2.png",
-        "/public/ameyaxgunna2.png",
-        "/public/ameyaxice2.png",
-        "/public/realwizzameya.png",
-        "/public/nadymbff.png"
+        "/public/ameyapolar2.jpg",
+        "/public/ameyaxgunna2.jpg",
+        "/public/ameyaxice2.jpg",
+        "/public/realwizzameya.jpg",
+        "/public/nadymbff.jpg"
       ],
       clients: [
         "/public/client-argentic.jpeg",
@@ -2702,6 +2708,8 @@
 
       const logo = document.createElement("img");
       logo.className = "about-logo";
+      logo.loading = "lazy";
+      logo.decoding = "async";
       logo.src = ABOUT.logo;
       logo.alt = "AMEYA";
       wrap.appendChild(logo);
@@ -2715,6 +2723,8 @@
       stage.className = "about-stage";
       ABOUT.gallery.forEach((src, index) => {
         const image = document.createElement("img");
+        image.loading = "lazy";
+        image.decoding = "async";
         image.src = src;
         image.alt = t("Ameya on set, photo") + " " + (index + 1);
         if (index === 0) image.className = "on";
@@ -3099,6 +3109,7 @@
             event.preventDefault();
             return;
           }
+          document.cookie = "ameya-lang=" + link.dataset.lang + "; path=/; max-age=31536000; samesite=lax";
           try {
             localStorage.setItem("ameya-lang", link.dataset.lang);
           } catch (error) {}
@@ -3218,9 +3229,10 @@
       }
       requestAnimationFrame(paint);
 
-      // Le chargement attend les images et la première vidéo de l'accueil,
-      // déjà en lecture derrière l'écran de chargement.
-      const images = ["/assets/logo.png", ABOUT.logo].concat(ABOUT.gallery, ABOUT.clients);
+      // Le chargement n'attend que le logo et la première vidéo de l'accueil,
+      // déjà en lecture derrière l'écran de chargement. Les images de la page
+      // About se chargent ensuite, sans prendre de bande passante à la vidéo.
+      const images = ["/assets/logo-336.png"];
       const onHome = document.getElementById("home").classList.contains("active");
       const total = images.length + (onHome ? 3 : 0);
       let done = 0;
@@ -3298,6 +3310,17 @@
         boot.hidden = true;
       }, 650);
       if (landing >= 0) openPlayer(WORKS[landing], landing);
+      window.setTimeout(preloadAbout, 4000);
+    }
+
+    // Images de la page About, chargées discrètement une fois l'accueil lancé.
+    function preloadAbout() {
+      [ABOUT.logo].concat(ABOUT.gallery, ABOUT.clients).forEach((src) => {
+        const image = new Image();
+        image.decoding = "async";
+        if ("fetchPriority" in image) image.fetchPriority = "low";
+        image.src = src;
+      });
     }
 
     init().catch(() => {
