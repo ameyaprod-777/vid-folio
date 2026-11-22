@@ -183,7 +183,22 @@
       align-items: center;
     }
 
-    .lang-switch { margin-right: 24px; }
+    /* Sélecteur de langue : la langue affichée en blanc, l'autre en gris. */
+    .head-right { position: relative; }
+
+    .lang {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-right: 28px;
+      padding-right: 28px;
+      border-right: 1px solid rgba(255, 255, 255, .18);
+      line-height: 1;
+    }
+
+    .lang span { color: rgba(255, 255, 255, .28); }
+
+    header .lang a[aria-current] { color: var(--white); }
 
     header a,
     .menu-btn {
@@ -1152,6 +1167,18 @@
       #nav,
       .head-right a { display: none; }
       .menu-btn { display: flex; }
+
+      /* Téléphone : le sélecteur se place sous l'icône du menu. */
+      .lang {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        margin: 16px 0 0;
+        padding: 0;
+        border: 0;
+      }
+
+      .head-right .lang a { display: inline; }
       .names { columns: 2; }
 
       /* Music Video : une colonne centrée, le titre passe sous l'artiste. */
@@ -1220,7 +1247,11 @@
     </a>
     <nav id="nav" aria-label="Catégories"></nav>
     <div class="head-right">
-      <a class="small lang-switch" id="lang-switch" href="/fr/" hreflang="fr" lang="fr">FR</a>
+      <div class="lang small" role="group" aria-label="Language / Langue">
+        <a href="/" hreflang="en" lang="en" data-lang="en">EN</a>
+        <span aria-hidden="true">/</span>
+        <a href="/fr/" hreflang="fr" lang="fr" data-lang="fr">FR</a>
+      </div>
       <a class="small" href="#contact" data-nav>Contact</a>
       <button type="button" class="menu-btn" id="open-menu" aria-label="Menu"><span></span><span></span><span></span></button>
     </div>
@@ -2038,16 +2069,6 @@
       contact.textContent = t("Contact");
       contact.dataset.nav = "";
       mobile.appendChild(contact);
-
-      // Changement de langue, aussi dans le menu mobile.
-      const other = LANG === "fr" ? "en" : "fr";
-      const lang = document.createElement("a");
-      lang.className = "lang-switch";
-      lang.textContent = other.toUpperCase();
-      lang.lang = other;
-      lang.hreflang = other;
-      mobile.appendChild(lang);
-      updateLangLinks();
     }
 
     function openMenu() {
@@ -2946,24 +2967,25 @@
 
     /* ---------- Langue ---------- */
 
-    // Le lien FR / EN garde la section en cours et retient le choix du visiteur.
+    // EN / FR garde la section en cours et retient le choix du visiteur.
     function updateLangLinks() {
-      const target = (LANG === "fr" ? "/" : "/fr/") + location.hash;
-      document.querySelectorAll(".lang-switch").forEach((link) => {
-        link.href = target;
+      document.querySelectorAll(".lang a").forEach((link) => {
+        link.href = (link.dataset.lang === "fr" ? "/fr/" : "/") + location.hash;
       });
     }
 
     function setupLanguage() {
       document.documentElement.lang = LANG;
-      document.querySelectorAll(".lang-switch").forEach((link) => {
-        const other = LANG === "fr" ? "en" : "fr";
-        link.textContent = other.toUpperCase();
-        link.lang = other;
-        link.hreflang = other;
-        link.addEventListener("click", () => {
+      document.querySelectorAll(".lang a").forEach((link) => {
+        const current = link.dataset.lang === LANG;
+        if (current) link.setAttribute("aria-current", "true");
+        link.addEventListener("click", (event) => {
+          if (current) {
+            event.preventDefault();
+            return;
+          }
           try {
-            localStorage.setItem("ameya-lang", other);
+            localStorage.setItem("ameya-lang", link.dataset.lang);
           } catch (error) {}
         });
       });
