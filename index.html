@@ -7,18 +7,11 @@
   <title>AMEYA — Video Production Company in Paris | Music Videos, Commercials</title>
   <meta name="description" content="AMEYA is a Paris-based video production company. Music videos, commercials and shows: direction, filming, camera operating, editing and post-production for artists, labels and brands.">
   <link rel="canonical" href="https://ameya.tv/">
-  <link rel="alternate" hreflang="en" href="https://ameya.tv/">
-  <link rel="alternate" hreflang="fr" href="https://ameya.tv/fr/">
-  <link rel="alternate" hreflang="x-default" href="https://ameya.tv/">
   <meta property="og:locale" content="en_US">
   <meta property="og:locale:alternate" content="fr_FR">
-  <meta property="og:type" content="website">
   <meta property="og:title" content="AMEYA — Video Production Company in Paris">
   <meta property="og:description" content="Music videos, commercials and shows. Direction, filming, editing and post-production for artists, labels and brands.">
   <meta property="og:url" content="https://ameya.tv/">
-  <meta property="og:image" content="https://ameya.tv/public/og-ameya.jpg">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -27,40 +20,16 @@
         "@type": "Organization",
         "@id": "https://ameya.tv/#organization",
         "name": "AMEYA",
-        "alternateName": [
-          "AMEYA CORP",
-          "AMEYA PROD",
-          "Ameya Films"
-        ],
+        "alternateName": ["AMEYA CORP", "AMEYA PROD", "Ameya Films"],
         "url": "https://ameya.tv/",
         "logo": "https://ameya.tv/assets/logo.png",
         "image": "https://ameya.tv/public/og-ameya.jpg",
         "email": "contact@ameya.tv",
-        "address": {
-          "@type": "PostalAddress",
-          "addressLocality": "Paris",
-          "addressRegion": "Île-de-France",
-          "addressCountry": "FR"
-        },
-        "sameAs": [
-          "https://www.instagram.com/ameya.films/",
-          "https://www.tiktok.com/@ameyaprod"
-        ],
         "description": "Paris-based video production company: music videos, commercials and shows. Direction, filming, camera operating, editing and post-production.",
-        "areaServed": [
-          "Paris",
-          "France",
-          "Worldwide"
-        ],
-        "knowsAbout": [
-          "Music video production",
-          "Commercial production",
-          "Film direction",
-          "Camera operating",
-          "Video editing",
-          "Post-production",
-          "Color grading"
-        ]
+        "address": { "@type": "PostalAddress", "addressLocality": "Paris", "addressRegion": "Île-de-France", "addressCountry": "FR" },
+        "areaServed": ["Paris", "France", "Worldwide"],
+        "knowsAbout": ["Music video production", "Commercial production", "Film direction", "Camera operating", "Video editing", "Post-production", "Color grading"],
+        "sameAs": ["https://www.instagram.com/ameya.films/", "https://www.tiktok.com/@ameyaprod"]
       },
       {
         "@type": "WebSite",
@@ -69,15 +38,21 @@
         "alternateName": "AMEYA CORP",
         "url": "https://ameya.tv/",
         "inLanguage": "en",
-        "publisher": {
-          "@id": "https://ameya.tv/#organization"
-        }
+        "publisher": { "@id": "https://ameya.tv/#organization" }
       }
     ]
   }
   </script>
   <!--/seo-->
+  <link rel="alternate" hreflang="en" href="https://ameya.tv/">
+  <link rel="alternate" hreflang="fr" href="https://ameya.tv/fr/">
+  <link rel="alternate" hreflang="x-default" href="https://ameya.tv/">
+  <meta property="og:type" content="website">
   <meta property="og:site_name" content="AMEYA">
+  <meta property="og:image" content="https://ameya.tv/public/og-ameya.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="AMEYA, Paris video production company">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#000000">
   <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48.png">
@@ -87,11 +62,10 @@
     // Un visiteur francophone arrive sur la version française, sauf s'il a choisi une langue.
     (function () {
       try {
-        var page = location.pathname;
-        if (page !== "/" && page !== "/index.html" && !/^\/work\//.test(page)) return;
-        if (/(?:^|;\s*)ameya-lang=/.test(document.cookie) || localStorage.getItem("ameya-lang")) return;
+        if (location.pathname !== "/" && location.pathname !== "/index.html") return;
+        if (localStorage.getItem("ameya-lang")) return;
         var langs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || ""];
-        if (/^fr\b/i.test(String(langs[0]))) location.replace("/fr" + (page === "/index.html" ? "/" : page) + location.hash);
+        if (/^fr\b/i.test(String(langs[0]))) location.replace("/fr/" + location.hash);
       } catch (error) {}
     })();
   </script>
@@ -222,14 +196,8 @@
       line-height: 1;
     }
 
-    /* Une ombre douce garde EN / FR lisible sur les vidéos claires. */
-    .lang { text-shadow: 0 1px 10px rgba(0, 0, 0, .6), 0 0 2px rgba(0, 0, 0, .35); }
+    .lang span { color: rgba(255, 255, 255, .28); }
 
-    .lang span { color: rgba(255, 255, 255, .45); }
-
-    header .lang a { color: rgba(255, 255, 255, .62); }
-
-    header .lang a:hover,
     header .lang a[aria-current] { color: var(--white); }
 
     header a,
@@ -1243,7 +1211,7 @@
 
     @media (max-width: 560px) {
       .grid { grid-template-columns: 1fr; }
-      .caption { bottom: 40px; }
+      .caption { bottom: 28px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -1259,7 +1227,7 @@
     <div class="boot-grid" aria-hidden="true"></div>
     <div class="boot-panel">
       <div class="boot-brand">
-        <img src="/assets/logo-336.png" alt="AMEYA">
+        <img src="assets/logo.png" alt="AMEYA">
         <p>Loading Project</p>
       </div>
       <div class="boot-track">
@@ -1275,7 +1243,7 @@
 
   <header>
     <a class="logo" href="#home" aria-label="AMEYA CORP, accueil">
-      <img src="/assets/logo-336.png" alt="AMEYA CORP">
+      <img src="assets/logo.png" alt="AMEYA CORP">
     </a>
     <nav id="nav" aria-label="Catégories"></nav>
     <div class="head-right">
@@ -1700,34 +1668,34 @@
     const SLIDE_DURATION = 30000;
 
     const ABOUT = {
-      logo: "/public/logo-ameya-white-png.png",
+      logo: "public/logo-ameya-white-png.png",
       paragraphs: [
         "Born from a passion for imagery and the raw energy of music videos, AMEYA is a creative production company built around one idea. Every frame should hit. From the first concept to the final cut, we handle direction, production and post-production for artists, brands and content creators. Our approach is driven by rhythm, bold visuals and a sense of storytelling that turns each project into something people feel, not just watch.",
         "Our signature? A balance between refined aesthetics and raw energy. We treat every frame as a canvas, then bring it to life through movement, rhythm and precise editing. Whether it's a music video, a commercial or an artistic project, we turn bold concepts into cinematic experiences that stay with the audience long after the screen goes dark."
       ],
       gallery: [
-        "/public/ameyapolar2.jpg",
-        "/public/ameyaxgunna2.jpg",
-        "/public/ameyaxice2.jpg",
-        "/public/realwizzameya.jpg",
-        "/public/nadymbff.jpg"
+        "public/ameyapolar2.png",
+        "public/ameyaxgunna2.png",
+        "public/ameyaxice2.png",
+        "public/realwizzameya.png",
+        "public/nadymbff.png"
       ],
       clients: [
-        "/public/client-argentic.jpeg",
-        "/public/client-arista.png",
-        "/public/client-colombus.png",
-        "/public/client-defjam.png",
-        "/public/client-epic.png",
-        "/public/client-fitnesspark.webp",
-        "/public/client-millenium.jpg",
-        "/public/client-rca.png",
-        "/public/client-sony.png",
-        "/public/client-universal.png",
-        "/public/client-virgin.png",
-        "/public/client-warner.png",
-        "/public/client-jmfilms.webp",
-        "/public/client-argo.webp",
-        "/public/client-nak.jpg"
+        "public/client-argentic.jpeg",
+        "public/client-arista.png",
+        "public/client-colombus.png",
+        "public/client-defjam.png",
+        "public/client-epic.png",
+        "public/client-fitnesspark.webp",
+        "public/client-millenium.jpg",
+        "public/client-rca.png",
+        "public/client-sony.png",
+        "public/client-universal.png",
+        "public/client-virgin.png",
+        "public/client-warner.png",
+        "public/client-jmfilms.webp",
+        "public/client-argo.webp",
+        "public/client-nak.jpg"
       ],
       places: ["Paris, FR", "Worldwide"]
     };
@@ -1780,48 +1748,6 @@
 
     function t(text) {
       return LANG === "fr" && FR[text] !== undefined ? FR[text] : text;
-    }
-
-    /* ---------- Une adresse par projet : /work/da-uzi-vrai-n ----------
-       Même règle que slugify() dans seo.js : les deux doivent rester identiques. */
-
-    function slugify(text) {
-      return String(text)
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "");
-    }
-
-    const WORK_SLUGS = (() => {
-      const seen = new Set();
-      return WORKS.map((work) => {
-        const base = slugify([work.client, work.title].filter(Boolean).join(" ")) || "projet";
-        let slug = base;
-        let n = 2;
-        while (seen.has(slug)) slug = base + "-" + n++;
-        seen.add(slug);
-        return slug;
-      });
-    })();
-
-    const HOME_TITLE = LANG === "fr"
-      ? "AMEYA — Société de production audiovisuelle à Paris | Clips, Pub, Tournage"
-      : "AMEYA — Video Production Company in Paris | Music Videos, Commercials";
-
-    function basePath(lang) {
-      return (lang || LANG) === "fr" ? "/fr/" : "/";
-    }
-
-    function workPath(index, lang) {
-      return basePath(lang) + "work/" + WORK_SLUGS[index];
-    }
-
-    // Index du projet dont la page est ouverte, ou -1.
-    function workFromPath() {
-      const match = location.pathname.match(/^(?:\/fr)?\/work\/([^/]+?)\/?$/);
-      return match ? WORK_SLUGS.indexOf(match[1]) : -1;
     }
 
     if (LANG === "fr") {
@@ -2613,7 +2539,7 @@
         names.className = "names" + (type === "show" ? " split" : "");
         list.filter((item) => (item.work.year || "") === year).forEach((item) => {
           const link = document.createElement("a");
-          link.href = workPath(item.index);
+          link.href = "#" + info.hash;
           link.setAttribute("aria-label", labelOf(item.work));
           appendName(link, item.work);
           link.addEventListener("mouseenter", () => showCategoryBg(backs, item.index));
@@ -2708,8 +2634,6 @@
 
       const logo = document.createElement("img");
       logo.className = "about-logo";
-      logo.loading = "lazy";
-      logo.decoding = "async";
       logo.src = ABOUT.logo;
       logo.alt = "AMEYA";
       wrap.appendChild(logo);
@@ -2723,8 +2647,6 @@
       stage.className = "about-stage";
       ABOUT.gallery.forEach((src, index) => {
         const image = document.createElement("img");
-        image.loading = "lazy";
-        image.decoding = "async";
         image.src = src;
         image.alt = t("Ameya on set, photo") + " " + (index + 1);
         if (index === 0) image.className = "on";
@@ -2966,10 +2888,7 @@
       });
     }
 
-    let playerPushed = false;
-    let pendingHash = "";
-
-    function openPlayer(work, index, fromHistory) {
+    function openPlayer(work, index) {
       const screen = document.getElementById("player-screen");
       emptyScreen();
       const id = youtubeId(work.youtube);
@@ -3018,10 +2937,7 @@
         const link = document.createElement("a");
         link.href = "#" + work.dir;
         link.textContent = directorName(work.dir);
-        link.addEventListener("click", (event) => {
-          event.preventDefault();
-          closePlayer({ hash: "#" + work.dir });
-        });
+        link.addEventListener("click", () => closePlayer());
         sub.appendChild(link);
         const rest = [work.madeFor || work.year, work.credit].filter(Boolean);
         if (rest.length) sub.appendChild(document.createTextNode(" · " + rest.join(" · ")));
@@ -3034,20 +2950,10 @@
       playerOpen = true;
       pauseShow();
       document.getElementById("player-close").focus();
-
-      // L'adresse devient celle du projet : partageable, et le bouton retour ferme le lecteur.
-      if (!fromHistory && WORK_SLUGS[index] && workFromPath() !== index) {
-        history.pushState({ work: WORK_SLUGS[index] }, "", workPath(index));
-        playerPushed = true;
-      }
-      document.title = labelOf(work) + " | AMEYA";
-      updateLangLinks();
     }
 
-    function closePlayer(options) {
+    function closePlayer() {
       if (!playerOpen) return;
-      const opts = options || {};
-      document.title = HOME_TITLE;
       player.classList.remove("open");
       player.inert = true;
       playerOpen = false;
@@ -3057,45 +2963,14 @@
       resumeShow();
       const active = document.querySelector(".view.active");
       if (active && active.id !== "home") settleMedia(active);
-
-      // Quitte l'adresse du projet pour revenir à la section affichée.
-      if (opts.fromHistory) {
-        playerPushed = false;
-      } else if (playerPushed) {
-        playerPushed = false;
-        pendingHash = opts.hash || "";
-        history.back();
-        return;
-      } else if (workFromPath() >= 0) {
-        history.replaceState(null, "", basePath() + "#" + (active ? active.id : "home"));
-      }
-      if (opts.hash) location.hash = opts.hash;
-      updateLangLinks();
-    }
-
-    // Retour / avance du navigateur : ouvre ou ferme le lecteur selon l'adresse.
-    function onHistory() {
-      const index = workFromPath();
-      if (index >= 0) {
-        if (!playerOpen) openPlayer(WORKS[index], index, true);
-        return;
-      }
-      if (playerOpen) closePlayer({ fromHistory: true });
-      if (pendingHash) {
-        const hash = pendingHash;
-        pendingHash = "";
-        location.hash = hash;
-      }
-      updateLangLinks();
     }
 
     /* ---------- Langue ---------- */
 
     // EN / FR garde la section en cours et retient le choix du visiteur.
     function updateLangLinks() {
-      const index = workFromPath();
       document.querySelectorAll(".lang a").forEach((link) => {
-        link.href = index >= 0 ? workPath(index, link.dataset.lang) : basePath(link.dataset.lang) + location.hash;
+        link.href = (link.dataset.lang === "fr" ? "/fr/" : "/") + location.hash;
       });
     }
 
@@ -3109,7 +2984,6 @@
             event.preventDefault();
             return;
           }
-          document.cookie = "ameya-lang=" + link.dataset.lang + "; path=/; max-age=31536000; samesite=lax";
           try {
             localStorage.setItem("ameya-lang", link.dataset.lang);
           } catch (error) {}
@@ -3144,13 +3018,7 @@
       section.querySelectorAll(".tile .media").forEach(releaseMedia);
     }
 
-    let routedView = "";
-
     function route() {
-      if (workFromPath() >= 0 && location.hash) {
-        history.replaceState(null, "", basePath() + location.hash);
-        if (playerOpen) closePlayer({ fromHistory: true });
-      }
       const raw = location.hash.replace("#", "");
       if (!hashIsKnown(raw)) {
         location.hash = "home";
@@ -3158,12 +3026,6 @@
       }
       const hash = raw || "home";
       closeMenu();
-      // Même section (ex. retour après le lecteur) : rien ne bouge, la liste garde sa position.
-      if (hash === routedView && document.getElementById(hash).classList.contains("active")) {
-        updateLangLinks();
-        return;
-      }
-      routedView = hash;
       document.querySelectorAll(".view").forEach((view) => {
         const on = view.id === hash;
         view.classList.toggle("active", on);
@@ -3229,10 +3091,9 @@
       }
       requestAnimationFrame(paint);
 
-      // Le chargement n'attend que le logo et la première vidéo de l'accueil,
-      // déjà en lecture derrière l'écran de chargement. Les images de la page
-      // About se chargent ensuite, sans prendre de bande passante à la vidéo.
-      const images = ["/assets/logo-336.png"];
+      // Le chargement attend les images et la première vidéo de l'accueil,
+      // déjà en lecture derrière l'écran de chargement.
+      const images = ["assets/logo.png", ABOUT.logo].concat(ABOUT.gallery, ABOUT.clients);
       const onHome = document.getElementById("home").classList.contains("active");
       const total = images.length + (onHome ? 3 : 0);
       let done = 0;
@@ -3289,19 +3150,12 @@
       });
       window.addEventListener("hashchange", route);
       window.addEventListener("hashchange", updateLangLinks);
-      window.addEventListener("popstate", onHistory);
       if (phoneQuery.addEventListener) phoneQuery.addEventListener("change", syncVimeoFrames);
       else phoneQuery.addListener(syncVimeoFrames);
       attachVimeoBridge();
 
       // La page s'affiche sous l'écran de chargement : la première vidéo
       // démarre tout de suite et tourne déjà quand le rideau se lève.
-      // Arrivée sur la page d'un projet : sa catégorie s'affiche, puis le lecteur s'ouvre.
-      const landing = workFromPath();
-      if (landing >= 0) {
-        const type = TYPES[WORKS[landing].type];
-        history.replaceState(null, "", basePath() + "#" + (type ? type.hash : "home"));
-      }
       route();
       await runBoot();
       const boot = document.getElementById("boot");
@@ -3309,18 +3163,6 @@
       window.setTimeout(() => {
         boot.hidden = true;
       }, 650);
-      if (landing >= 0) openPlayer(WORKS[landing], landing);
-      window.setTimeout(preloadAbout, 4000);
-    }
-
-    // Images de la page About, chargées discrètement une fois l'accueil lancé.
-    function preloadAbout() {
-      [ABOUT.logo].concat(ABOUT.gallery, ABOUT.clients).forEach((src) => {
-        const image = new Image();
-        image.decoding = "async";
-        if ("fetchPriority" in image) image.fetchPriority = "low";
-        image.src = src;
-      });
     }
 
     init().catch(() => {

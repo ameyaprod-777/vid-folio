@@ -1,7 +1,6 @@
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
-const seo = require("./seo");
 
 const ROOT = __dirname;
 const PORT = Number(process.env.PORT) || 4173;
@@ -38,20 +37,35 @@ const TYPES = {
   ".xml": "application/xml; charset=utf-8"
 };
 
-// Toutes les pages du site partagent index.html ; seul le <head> change
-// selon la langue (/ ou /fr/) et le projet (/work/<nom-du-projet>).
-function sendPage(request, response, lang, found, status) {
+// Version française : même page, avec le <head> et le titre H1 en français.
+function frenchPage(html) {
+  let head = "";
+  try {
+    head = fs.readFileSync(path.join(ROOT, "seo", "fr-head.html"), "utf8");
+  } catch {
+    return html;
+  }
+  return html
+    .replace('<html lang="en">', '<html lang="fr">')
+    .replace(/<!--seo-->[\s\S]*?<!--\/seo-->/, "<!--seo-->\n" + head + "  <!--/seo-->")
+    .replace(
+      /<!--h1-->[\s\S]*?<!--\/h1-->/,
+      '<!--h1--><h1 class="sr-only">AMEYA — Société de production audiovisuelle à Paris : clips, publicités, émissions</h1><!--/h1-->'
+    );
+}
+
+function sendPage(request, response, french) {
   fs.readFile(path.join(ROOT, "index.html"), "utf8", (error, html) => {
     if (error) {
       response.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
       response.end("Not found");
       return;
     }
-    const body = seo.renderPage(html, lang, found);
+    const body = french ? frenchPage(html) : html;
     const headers = headersFor("index.html");
-    headers["Content-Language"] = lang;
-    headers["Vary"] = "Accept-Language, Cookie";
-    response.writeHead(status || 200, headers);
+    headers["Content-Language"] = french ? "fr" : "en";
+    headers["Vary"] = "Accept-Encoding";
+    response.writeHead(200, headers);
     response.end(request.method === "HEAD" ? undefined : body);
   });
 }
@@ -217,48 +231,11 @@ function serveFile(request, response) {
     response.end();
     return;
   }
-  if (pathname === "/sitemap.xml") {
-    response.writeHead(200, {
-      "Content-Type": "application/xml; charset=utf-8",
-      "Cache-Control": "public, max-age=3600"
-    });
-    response.end(request.method === "HEAD" ? undefined : seo.sitemap());
-    return;
-  }
-
-  const lang = pathname.startsWith("/fr/") ? "fr" : "en";
-
-  // Un navigateur en français va directement sur /fr/, sans charger d'abord la
-  // page anglaise. Le choix fait avec EN / FR (cookie ameya-lang) est prioritaire.
-  if (lang === "en" && (pathname === "/" || pathname === "/index.html" || pathname.startsWith("/work/"))) {
-    const cookie = String(request.headers.cookie || "");
-    const chosen = (cookie.match(/(?:^|;\s*)ameya-lang=(en|fr)/) || [])[1];
-    const accept = String(request.headers["accept-language"] || "").trim().toLowerCase();
-    if (!chosen && /^fr\b/.test(accept)) {
-      const target = "/fr" + (pathname === "/index.html" ? "/" : pathname) + url.search;
-      response.writeHead(302, { Location: target, Vary: "Accept-Language, Cookie", "Cache-Control": "private, no-cache" });
-      response.end();
-      return;
-    }
-  }
-  const prefix = lang === "fr" ? "/fr" : "";
-  if (lang === "fr") pathname = pathname.slice(3);
+  const french = pathname.startsWith("/fr/");
+  if (french) pathname = pathname.slice(3);
 
   if (pathname === "/" || pathname === "/index.html") {
-    sendPage(request, response, lang, null);
-    return;
-  }
-
-  // Une page par projet : /work/da-uzi-vrai-n et /fr/work/da-uzi-vrai-n.
-  const work = pathname.match(/^\/work\/([^/]+?)(\/?)$/);
-  if (work) {
-    const found = seo.findWork(work[1]);
-    if (found && (work[2] || found.slug !== work[1])) {
-      response.writeHead(301, { Location: prefix + "/work/" + found.slug + url.search });
-      response.end();
-      return;
-    }
-    sendPage(request, response, lang, found, found ? 200 : 404);
+    sendPage(request, response, french);
     return;
   }
   const file = path.normalize(path.join(ROOT, pathname));
@@ -277,7 +254,7 @@ function serveFile(request, response) {
     const ext = path.extname(pathname).toLowerCase();
     const index = path.join(ROOT, "index.html");
     if ((!ext || ext === ".html") && !pathname.startsWith("/api/") && fs.existsSync(index)) {
-      sendPage(request, response, lang, null);
+      sendPage(request, response, french);
       return;
     }
 
@@ -316,6 +293,4 @@ server.on("clientError", (error, socket) => {
 
 server.listen(PORT, () => {
   console.log(`AMEYA site ready at http://127.0.0.1:${PORT}`);
-  seo.refreshVideoInfo();
-  setInterval(seo.refreshVideoInfo, 6 * 3600 * 1000).unref();
 });
