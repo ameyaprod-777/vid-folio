@@ -32,8 +32,43 @@ const TYPES = {
   ".webp": "image/webp",
   ".svg": "image/svg+xml",
   ".ico": "image/x-icon",
-  ".json": "application/json; charset=utf-8"
+  ".json": "application/json; charset=utf-8",
+  ".txt": "text/plain; charset=utf-8",
+  ".xml": "application/xml; charset=utf-8"
 };
+
+// Version française : même page, avec le <head> et le titre H1 en français.
+function frenchPage(html) {
+  let head = "";
+  try {
+    head = fs.readFileSync(path.join(ROOT, "seo", "fr-head.html"), "utf8");
+  } catch {
+    return html;
+  }
+  return html
+    .replace('<html lang="en">', '<html lang="fr">')
+    .replace(/<!--seo-->[\s\S]*?<!--\/seo-->/, "<!--seo-->\n" + head + "  <!--/seo-->")
+    .replace(
+      /<!--h1-->[\s\S]*?<!--\/h1-->/,
+      '<!--h1--><h1 class="sr-only">AMEYA — Société de production audiovisuelle à Paris : clips, publicités, émissions</h1><!--/h1-->'
+    );
+}
+
+function sendPage(request, response, french) {
+  fs.readFile(path.join(ROOT, "index.html"), "utf8", (error, html) => {
+    if (error) {
+      response.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
+      response.end("Not found");
+      return;
+    }
+    const body = french ? frenchPage(html) : html;
+    const headers = headersFor("index.html");
+    headers["Content-Language"] = french ? "fr" : "en";
+    headers["Vary"] = "Accept-Encoding";
+    response.writeHead(200, headers);
+    response.end(request.method === "HEAD" ? undefined : body);
+  });
+}
 
 function sendJson(response, status, payload) {
   response.writeHead(status, { "Content-Type": "application/json; charset=utf-8" });
@@ -190,7 +225,19 @@ function serveFile(request, response) {
     return;
   }
 
-  if (pathname.endsWith("/")) pathname += "index.html";
+  // ameya.tv/fr → ameya.tv/fr/ ; les fichiers sous /fr/ sont ceux de la racine.
+  if (pathname === "/fr") {
+    response.writeHead(301, { Location: "/fr/" + url.search });
+    response.end();
+    return;
+  }
+  const french = pathname.startsWith("/fr/");
+  if (french) pathname = pathname.slice(3);
+
+  if (pathname === "/" || pathname === "/index.html") {
+    sendPage(request, response, french);
+    return;
+  }
   const file = path.normalize(path.join(ROOT, pathname));
   if (!file.startsWith(ROOT)) {
     response.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
@@ -207,7 +254,7 @@ function serveFile(request, response) {
     const ext = path.extname(pathname).toLowerCase();
     const index = path.join(ROOT, "index.html");
     if ((!ext || ext === ".html") && !pathname.startsWith("/api/") && fs.existsSync(index)) {
-      pipeFile(request, response, index);
+      sendPage(request, response, french);
       return;
     }
 

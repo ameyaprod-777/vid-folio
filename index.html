@@ -1,10 +1,74 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AMEYA CORP — Société de production</title>
-  <meta name="description" content="AMEYA CORP, société de production audiovisuelle. Clips, publicité et contenus. Réalisation, image et direction artistique.">
+  <!--seo-->
+  <title>AMEYA — Video Production Company in Paris | Music Videos, Commercials</title>
+  <meta name="description" content="AMEYA is a Paris-based video production company. Music videos, commercials and shows: direction, filming, camera operating, editing and post-production for artists, labels and brands.">
+  <link rel="canonical" href="https://ameya.tv/">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:locale:alternate" content="fr_FR">
+  <meta property="og:title" content="AMEYA — Video Production Company in Paris">
+  <meta property="og:description" content="Music videos, commercials and shows. Direction, filming, editing and post-production for artists, labels and brands.">
+  <meta property="og:url" content="https://ameya.tv/">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://ameya.tv/#organization",
+        "name": "AMEYA",
+        "alternateName": ["AMEYA CORP", "AMEYA PROD", "Ameya Films"],
+        "url": "https://ameya.tv/",
+        "logo": "https://ameya.tv/assets/logo.png",
+        "image": "https://ameya.tv/public/og-ameya.jpg",
+        "email": "contact@ameya.tv",
+        "description": "Paris-based video production company: music videos, commercials and shows. Direction, filming, camera operating, editing and post-production.",
+        "address": { "@type": "PostalAddress", "addressLocality": "Paris", "addressRegion": "Île-de-France", "addressCountry": "FR" },
+        "areaServed": ["Paris", "France", "Worldwide"],
+        "knowsAbout": ["Music video production", "Commercial production", "Film direction", "Camera operating", "Video editing", "Post-production", "Color grading"],
+        "sameAs": ["https://www.instagram.com/ameya.films/", "https://www.tiktok.com/@ameyaprod"]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://ameya.tv/#website",
+        "name": "AMEYA",
+        "alternateName": "AMEYA CORP",
+        "url": "https://ameya.tv/",
+        "inLanguage": "en",
+        "publisher": { "@id": "https://ameya.tv/#organization" }
+      }
+    ]
+  }
+  </script>
+  <!--/seo-->
+  <link rel="alternate" hreflang="en" href="https://ameya.tv/">
+  <link rel="alternate" hreflang="fr" href="https://ameya.tv/fr/">
+  <link rel="alternate" hreflang="x-default" href="https://ameya.tv/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="AMEYA">
+  <meta property="og:image" content="https://ameya.tv/public/og-ameya.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="AMEYA, Paris video production company">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#000000">
+  <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48.png">
+  <link rel="icon" type="image/png" sizes="1000x1000" href="/assets/logo.png">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <script>
+    // Un visiteur francophone arrive sur la version française, sauf s'il a choisi une langue.
+    (function () {
+      try {
+        if (location.pathname !== "/" && location.pathname !== "/index.html") return;
+        if (localStorage.getItem("ameya-lang")) return;
+        var langs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || ""];
+        if (/^fr\b/i.test(String(langs[0]))) location.replace("/fr/" + location.hash);
+      } catch (error) {}
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://player.vimeo.com">
@@ -22,6 +86,18 @@
     }
 
     * { box-sizing: border-box; }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      padding: 0;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+      border: 0;
+    }
 
     html, body { margin: 0; padding: 0; }
 
@@ -106,6 +182,8 @@
       display: flex;
       align-items: center;
     }
+
+    .lang-switch { margin-right: 24px; }
 
     header a,
     .menu-btn {
@@ -1134,6 +1212,7 @@
     </div>
   </div>
   <div class="grain" aria-hidden="true"></div>
+  <!--h1--><h1 class="sr-only">AMEYA — Video production company in Paris: music videos, commercials, shows</h1><!--/h1-->
 
   <header>
     <a class="logo" href="#home" aria-label="AMEYA CORP, accueil">
@@ -1141,6 +1220,7 @@
     </a>
     <nav id="nav" aria-label="Catégories"></nav>
     <div class="head-right">
+      <a class="small lang-switch" id="lang-switch" href="/fr/" hreflang="fr" lang="fr">FR</a>
       <a class="small" href="#contact" data-nav>Contact</a>
       <button type="button" class="menu-btn" id="open-menu" aria-label="Menu"><span></span><span></span><span></span></button>
     </div>
@@ -1600,6 +1680,54 @@
     };
 
     /* ============================================================
+       Version française, servie sur ameya.tv/fr/.
+       Chaque texte anglais du site a ici son équivalent français.
+       ============================================================ */
+    const LANG = /^\/fr(\/|$)/.test(location.pathname) ? "fr" : "en";
+
+    const FR = {
+      "Commercial": "Publicité",
+      "Music Video": "Clips",
+      "Shows": "Émissions",
+      "Broadcast": "Contenus",
+      "About": "À propos",
+      "Contact": "Contact",
+      "They Trust Us": "Ils nous font confiance",
+      "Worldwide": "Monde entier",
+      "Email": "E-mail",
+      "Social": "Réseaux",
+      "Name": "Nom",
+      "Describe your project": "Décrivez votre projet",
+      "Send message": "Envoyer",
+      "Sending...": "Envoi…",
+      "Message sent successfully! I'll get back to you soon.": "Message envoyé ! Nous revenons vers vous très vite.",
+      "Failed to send message. Please try again.": "L'envoi a échoué. Merci de réessayer.",
+      "An error occurred. Please try again later.": "Une erreur est survenue. Merci de réessayer plus tard.",
+      "Loading Project": "Chargement du projet",
+      "Initializing Timeline": "Initialisation de la timeline",
+      "Loading Assets": "Chargement des médias",
+      "Rendering Sequences": "Rendu des séquences",
+      "Processing Media": "Traitement des images",
+      "Finalizing Project": "Finalisation du projet",
+      "Ready": "Prêt",
+      "Close ✕": "Fermer ✕",
+      "Next clip": "Extrait suivant",
+      "Ameya on set, photo": "Ameya en tournage, photo"
+    };
+
+    function t(text) {
+      return LANG === "fr" && FR[text] !== undefined ? FR[text] : text;
+    }
+
+    if (LANG === "fr") {
+      ABOUT.paragraphs = [
+        "Née d'une passion pour l'image et de l'énergie brute du clip, AMEYA est une société de production créative basée à Paris, construite autour d'une idée : chaque plan doit frapper. Du premier concept au montage final, nous prenons en charge la réalisation, la production et la post-production pour les artistes, les marques et les créateurs de contenu. Notre approche repose sur le rythme, des images fortes et un vrai sens du récit, pour que chaque projet se ressente, et ne se regarde pas seulement.",
+        "Notre signature ? L'équilibre entre une esthétique soignée et une énergie brute. Nous traitons chaque plan comme une toile, puis lui donnons vie par le mouvement, le rythme et un montage précis. Clip, publicité ou projet artistique : nous transformons des idées audacieuses en expériences cinématographiques qui restent en tête bien après le générique."
+      ];
+      CONTACT.intro = "Artistes, labels, marques : faisons de votre prochain film un projet qui marque. Notre équipe est disponible pour de nouveaux projets et des collaborations créatives. Écrivez-nous, et construisons ensemble quelque chose de puissant.";
+    }
+
+    /* ============================================================
        Moteur. Inutile d'y toucher pour ajouter un projet.
        ============================================================ */
 
@@ -1900,16 +2028,26 @@
       Object.keys(TYPES).forEach((type) => {
         if (!worksOfType(type).length) return;
         const info = TYPES[type];
-        [desktop, mobile].forEach((parent) => addLink(parent, "#" + info.hash, info.label));
+        [desktop, mobile].forEach((parent) => addLink(parent, "#" + info.hash, t(info.label)));
       });
 
-      [desktop, mobile].forEach((parent) => addLink(parent, "#about", "About"));
+      [desktop, mobile].forEach((parent) => addLink(parent, "#about", t("About")));
 
       const contact = document.createElement("a");
       contact.href = "#contact";
-      contact.textContent = "Contact";
+      contact.textContent = t("Contact");
       contact.dataset.nav = "";
       mobile.appendChild(contact);
+
+      // Changement de langue, aussi dans le menu mobile.
+      const other = LANG === "fr" ? "en" : "fr";
+      const lang = document.createElement("a");
+      lang.className = "lang-switch";
+      lang.textContent = other.toUpperCase();
+      lang.lang = other;
+      lang.hreflang = other;
+      mobile.appendChild(lang);
+      updateLangLinks();
     }
 
     function openMenu() {
@@ -1975,7 +2113,7 @@
       const skip = document.createElement("button");
       skip.type = "button";
       skip.className = "skip-next";
-      skip.setAttribute("aria-label", "Extrait suivant");
+      skip.setAttribute("aria-label", t("Next clip"));
       skip.addEventListener("click", () => goSlide((homePending >= 0 ? homePending : slideIndex) + 1));
       section.appendChild(skip);
 
@@ -2360,7 +2498,7 @@
       inner.className = "cat-inner";
       const kicker = document.createElement("p");
       kicker.className = "small";
-      kicker.textContent = info.label;
+      kicker.textContent = t(info.label);
       inner.appendChild(kicker);
 
       const years = [...new Set(list.map((item) => item.work.year || ""))]
@@ -2489,7 +2627,7 @@
       ABOUT.gallery.forEach((src, index) => {
         const image = document.createElement("img");
         image.src = src;
-        image.alt = "Ameya, photo " + (index + 1);
+        image.alt = t("Ameya on set, photo") + " " + (index + 1);
         if (index === 0) image.className = "on";
         stage.appendChild(image);
       });
@@ -2509,7 +2647,7 @@
       trust.className = "about-trust";
       const heading = document.createElement("h2");
       heading.className = "wide";
-      heading.textContent = "They Trust Us";
+      heading.textContent = t("They Trust Us");
       trust.appendChild(heading);
 
       const viewport = document.createElement("div");
@@ -2538,7 +2676,7 @@
         items.forEach((item) => {
           const li = document.createElement("li");
           li.className = "wide";
-          li.textContent = item;
+          li.textContent = t(item);
           list.appendChild(li);
         });
         cols.appendChild(list);
@@ -2574,7 +2712,7 @@
 
       const title = document.createElement("h1");
       title.className = "wide";
-      title.textContent = "Contact";
+      title.textContent = t("Contact");
       page.appendChild(title);
 
       const split = document.createElement("div");
@@ -2590,7 +2728,7 @@
       mailBlock.className = "contact-block";
       const mailKicker = document.createElement("span");
       mailKicker.className = "contact-kicker";
-      mailKicker.textContent = "Email";
+      mailKicker.textContent = t("Email");
       const mail = document.createElement("a");
       mail.className = "contact-link";
       mail.href = "mailto:" + CONTACT.email;
@@ -2603,7 +2741,7 @@
       socialBlock.className = "contact-block";
       const socialKicker = document.createElement("span");
       socialKicker.className = "contact-kicker";
-      socialKicker.textContent = "Social";
+      socialKicker.textContent = t("Social");
       socialBlock.appendChild(socialKicker);
       CONTACT.socials.forEach(([label, href]) => {
         const link = document.createElement("a");
@@ -2631,9 +2769,9 @@
       form.appendChild(honeypot);
 
       const fields = [
-        ["name", "Name", "text", true],
-        ["email", "Email", "email", true],
-        ["message", "Describe your project", "textarea", true]
+        ["name", t("Name"), "text", true],
+        ["email", t("Email"), "email", true],
+        ["message", t("Describe your project"), "textarea", true]
       ];
 
       fields.forEach(([id, label, kind, required]) => {
@@ -2660,13 +2798,13 @@
       const button = document.createElement("button");
       button.className = "contact-send";
       button.type = "submit";
-      button.textContent = "Send message";
+      button.textContent = t("Send message");
       form.appendChild(button);
 
       form.addEventListener("submit", async (event) => {
         event.preventDefault();
         button.disabled = true;
-        button.textContent = "Sending...";
+        button.textContent = t("Sending...");
         status.hidden = true;
         window.clearTimeout(contactStatusTimer);
 
@@ -2686,20 +2824,22 @@
           const payload = await response.json().catch(() => ({}));
           if (response.ok) {
             status.className = "contact-status ok";
-            status.textContent = "Message sent successfully! I'll get back to you soon.";
+            status.textContent = t("Message sent successfully! I'll get back to you soon.");
             form.reset();
           } else {
             status.className = "contact-status bad";
-            status.textContent = payload.error || "Failed to send message. Please try again.";
+            status.textContent = LANG === "fr"
+              ? t("Failed to send message. Please try again.")
+              : payload.error || "Failed to send message. Please try again.";
           }
         } catch (error) {
           status.className = "contact-status bad";
-          status.textContent = "An error occurred. Please try again later.";
+          status.textContent = t("An error occurred. Please try again later.");
         }
 
         status.hidden = false;
         button.disabled = false;
-        button.textContent = "Send message";
+        button.textContent = t("Send message");
         contactStatusTimer = window.setTimeout(() => {
           status.hidden = true;
         }, 5000);
@@ -2804,6 +2944,39 @@
       if (active && active.id !== "home") settleMedia(active);
     }
 
+    /* ---------- Langue ---------- */
+
+    // Le lien FR / EN garde la section en cours et retient le choix du visiteur.
+    function updateLangLinks() {
+      const target = (LANG === "fr" ? "/" : "/fr/") + location.hash;
+      document.querySelectorAll(".lang-switch").forEach((link) => {
+        link.href = target;
+      });
+    }
+
+    function setupLanguage() {
+      document.documentElement.lang = LANG;
+      document.querySelectorAll(".lang-switch").forEach((link) => {
+        const other = LANG === "fr" ? "en" : "fr";
+        link.textContent = other.toUpperCase();
+        link.lang = other;
+        link.hreflang = other;
+        link.addEventListener("click", () => {
+          try {
+            localStorage.setItem("ameya-lang", other);
+          } catch (error) {}
+        });
+      });
+      document.querySelectorAll("#close-menu, #player-close").forEach((button) => {
+        button.textContent = t("Close ✕");
+      });
+      const bootLabel = document.querySelector(".boot-brand p");
+      if (bootLabel) bootLabel.textContent = t("Loading Project");
+      const bootMsg = document.getElementById("boot-msg");
+      if (bootMsg) bootMsg.textContent = t("Initializing Timeline");
+      updateLangLinks();
+    }
+
     /* ---------- Routeur ---------- */
 
     function hashIsKnown(hash) {
@@ -2865,12 +3038,12 @@
 
     function runBoot() {
       const lines = [
-        [0, "Initializing Timeline"],
-        [20, "Loading Assets"],
-        [40, "Rendering Sequences"],
-        [60, "Processing Media"],
-        [80, "Finalizing Project"],
-        [95, "Ready"]
+        [0, t("Initializing Timeline")],
+        [20, t("Loading Assets")],
+        [40, t("Rendering Sequences")],
+        [60, t("Processing Media")],
+        [80, t("Finalizing Project")],
+        [95, t("Ready")]
       ];
       const bar = document.getElementById("boot-bar");
       const head = document.getElementById("boot-head");
@@ -2928,6 +3101,7 @@
       }
 
       renderNav();
+      setupLanguage();
       renderHome();
       renderCategory("pub");
       renderCategory("clip");
@@ -2953,6 +3127,7 @@
         else resumeShow();
       });
       window.addEventListener("hashchange", route);
+      window.addEventListener("hashchange", updateLangLinks);
       if (phoneQuery.addEventListener) phoneQuery.addEventListener("change", syncVimeoFrames);
       else phoneQuery.addListener(syncVimeoFrames);
       attachVimeoBridge();
