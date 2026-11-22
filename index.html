@@ -398,10 +398,10 @@
 
     .caption {
       position: absolute;
-      right: var(--pad);
+      left: var(--pad);
       bottom: 40px;
       z-index: 5;
-      text-align: right;
+      text-align: left;
       pointer-events: none;
       margin: 0;
     }
@@ -459,6 +459,24 @@
 
     .progress span.done::after { width: 100%; }
     .progress span.on::after { width: var(--p, 0%); }
+
+    /* Zone invisible : la moitié droite de l'accueil passe à l'extrait suivant. */
+    .skip-next {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 50%;
+      z-index: 4;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: e-resize;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .skip-next:focus { outline: none; }
 
     /* Compteur : codé, masqué. Passer en display:flex pour l'afficher. */
     .counter {
@@ -1952,6 +1970,14 @@
         counter.appendChild(button);
       });
       section.appendChild(counter);
+
+      // Toucher la moitié droite de l'écran passe à l'extrait suivant.
+      const skip = document.createElement("button");
+      skip.type = "button";
+      skip.className = "skip-next";
+      skip.setAttribute("aria-label", "Extrait suivant");
+      skip.addEventListener("click", () => goSlide((homePending >= 0 ? homePending : slideIndex) + 1));
+      section.appendChild(skip);
 
       app.appendChild(section);
     }
