@@ -136,50 +136,112 @@ async function handleContact(request, response) {
   sendJson(response, 200, { success: true, message: "Message sent successfully" });
 }
 
-function serveFile(request, response) {
-  const url = new URL(request.url, `http://${request.headers.host}`);
-  let pathname = decodeURIComponent(url.pathname);
-  if (pathname.includes("\0") || pathname.split("/").includes("..") || pathname.startsWith("/.")) {
-    response.writeHead(404);
+function headersFor(file) {
+  const ext = path.extname(file).toLowerCase();
+  return {
+    "Content-Type": TYPES[ext] || "application/octet-stream",
+    "Cache-Control": ext === ".html" ? "no-cache" : "public, max-age=86400",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "X-Content-Type-Options": "nosniff"
+  };
+}
+
+function pipeFile(request, response, file) {
+  const stream = fs.createReadStream(file);
+  stream.on("error", () => {
+    if (response.headersSent) {
+      response.destroy();
+      return;
+    }
+    response.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
     response.end("Not found");
+  });
+  response.writeHead(200, headersFor(file));
+  if (request.method === "HEAD") {
+    stream.destroy();
+    response.end();
     return;
   }
-  if (pathname.endsWith("/")) pathname += "index.html";
-  const file = path.join(ROOT, pathname);
-  if (!file.startsWith(ROOT)) {
-    response.writeHead(404);
+  stream.pipe(response);
+}
+
+function serveFile(request, response) {
+  let url;
+  try {
+    url = new URL(request.url, "http://127.0.0.1");
+  } catch {
+    response.writeHead(400, { "Content-Type": "text/plain; charset=utf-8" });
+    response.end("Bad request");
+    return;
+  }
+
+  let pathname;
+  try {
+    pathname = decodeURIComponent(url.pathname);
+  } catch {
+    response.writeHead(400, { "Content-Type": "text/plain; charset=utf-8" });
+    response.end("Bad request");
+    return;
+  }
+
+  if (pathname.includes("\0") || pathname.split("/").includes("..") || pathname.startsWith("/.")) {
+    response.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
     response.end("Not found");
     return;
   }
 
-  fs.readFile(file, (error, content) => {
-    if (error) {
-      response.writeHead(404);
-      response.end("Not found");
+  if (pathname.endsWith("/")) pathname += "index.html";
+  const file = path.normalize(path.join(ROOT, pathname));
+  if (!file.startsWith(ROOT)) {
+    response.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
+    response.end("Not found");
+    return;
+  }
+
+  fs.stat(file, (error, stat) => {
+    if (!error && stat.isFile()) {
+      pipeFile(request, response, file);
       return;
     }
-    response.writeHead(200, { "Content-Type": TYPES[path.extname(file).toLowerCase()] || "application/octet-stream" });
-    response.end(content);
+
+    const ext = path.extname(pathname).toLowerCase();
+    const index = path.join(ROOT, "index.html");
+    if ((!ext || ext === ".html") && !pathname.startsWith("/api/") && fs.existsSync(index)) {
+      pipeFile(request, response, index);
+      return;
+    }
+
+    response.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
+    response.end("Not found");
   });
 }
 
 const server = http.createServer(async (request, response) => {
-  if (request.method === "POST" && new URL(request.url, "http://localhost").pathname === "/api/contact") {
-    try {
+  try {
+    const pathname = new URL(request.url, "http://127.0.0.1").pathname;
+    if (request.method === "POST" && pathname === "/api/contact") {
       await handleContact(request, response);
-    } catch {
-      sendJson(response, 500, { error: "An error occurred. Please try again later." });
+      return;
     }
-    return;
-  }
 
-  if (request.method !== "GET" && request.method !== "HEAD") {
-    response.writeHead(405);
-    response.end("Method not allowed");
-    return;
-  }
+    if (request.method !== "GET" && request.method !== "HEAD") {
+      response.writeHead(405, { "Content-Type": "text/plain; charset=utf-8" });
+      response.end("Method not allowed");
+      return;
+    }
 
-  serveFile(request, response);
+    serveFile(request, response);
+  } catch {
+    if (response.headersSent) {
+      response.end();
+      return;
+    }
+    sendJson(response, 500, { error: "An error occurred. Please try again later." });
+  }
+});
+
+server.on("clientError", (error, socket) => {
+  if (socket.writable) socket.end("HTTP/1.1 400 Bad Request\r\n\r\n");
 });
 
 server.listen(PORT, () => {
